@@ -1,0 +1,35 @@
+{
+    "name": "Artificial Intelligence",
+    "ziel_notendurchschnitt": 2.0,
+    "semester": [
+        {
+            "nummer": 1,
+            "module": [
+                {
+                    "name": "OOP",
+                    "ects": 5.0,
+                    "pruefungsleistung": {
+                        "art": "Portfolio",
+                        "note": 1.7
+                    }
+                },
+                {
+                    "name": "Mathematik",
+                    "ects": 5.0,
+                    "pruefungsleistung": {
+                        "art": "Klausur",
+                        "note": 2.3
+                    }
+                },
+                {
+                    "name": "Ethik",
+                    "ects": 5.0,
+                    "pruefungsleistung": {
+                        "art": "Vortrag",
+                        "note": 5.0
+                    }
+                }
+            ]
+        }
+    ]
+}
