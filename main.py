@@ -12,7 +12,7 @@ Aufbau:
 import json
 import os
 
-#Fachklasse
+# Fachklasse
 class Pruefungsleistung:
     def __init__(self, art, note):
         self.art = art
@@ -51,7 +51,7 @@ class Pruefungsleistung:
         status = "bestanden" if self.ist_bestanden() else "nicht bestanden"
         return f"Prüfungsart: {self.art} | Note: {self.note} -> {status}"
 
-#Fachklasse
+# Fachklasse
 class Modul:
     def __init__(self, name, ects, pruefungsleistung=None):
         self.name = name
@@ -115,7 +115,7 @@ class Modul:
 
         return f"Modul: {self.name} | {self.ects} ECTS | {self.pruefungsleistung}"
 
-#Fachklasse
+# Fachklasse
 class Semester:
     def __init__(self, nummer):
         self.nummer = nummer
@@ -181,11 +181,12 @@ class Semester:
 
         return semester
 
-#Fachklasse
+# Fachklasse
 class Studiengang:
-    def __init__(self, name, ziel_notendurchschnitt):
+    def __init__(self, name, ziel_notendurchschnitt, gesamt_ects):
         self.name = name
         self.ziel_notendurchschnitt = ziel_notendurchschnitt
+        self.gesamt_ects = gesamt_ects
         self.semester = []
 
     @property
@@ -203,6 +204,14 @@ class Studiengang:
     @ziel_notendurchschnitt.setter
     def ziel_notendurchschnitt(self, ziel_notendurchschnitt):
         self._ziel_notendurchschnitt = ziel_notendurchschnitt
+
+    @property
+    def gesamt_ects(self):
+        return self._gesamt_ects
+
+    @gesamt_ects.setter
+    def gesamt_ects(self, gesamt_ects):
+        self._gesamt_ects = gesamt_ects
 
     def semester_hinzufuegen(self, semester):
         self.semester.append(semester)
@@ -223,12 +232,14 @@ class Studiengang:
         return {
             "name": self.name,
             "ziel_notendurchschnitt": self.ziel_notendurchschnitt,
+            "gesamt_ects": self.gesamt_ects,
             "semester": semester_liste
         }
 
     @classmethod
     def aus_dict(cls, daten):
-        studiengang = cls(daten["name"], daten["ziel_notendurchschnitt"])
+        gesamt_ects = daten.get("gesamt_ects", 180)
+        studiengang = cls(daten["name"], daten["ziel_notendurchschnitt"], gesamt_ects)
 
         for semester_daten in daten["semester"]:
             semester = Semester.aus_dict(semester_daten)
@@ -255,7 +266,7 @@ class Studiengang:
     def berechne_notendurchschnitt(self):
         noten_summe = 0
         anzahl_noten = 0
-        #Es zählen nur bestandene Pruefungsleistungen.
+        # Es zaehlen nur bestandene Pruefungsleistungen.
         for semester in self.semester:
             for modul in semester.module:
                 if modul.ist_abgeschlossen():
@@ -267,11 +278,7 @@ class Studiengang:
         return noten_summe / anzahl_noten
 
     def berechne_gesamte_ects(self):
-        gesamte_ects = 0
-        for semester in self.semester:
-            for modul in semester.module:
-                gesamte_ects += modul.ects
-        return gesamte_ects
+        return self.gesamt_ects
 
     def berechne_bestandene_ects(self):
         bestandene_ects = 0
@@ -282,13 +289,13 @@ class Studiengang:
         return bestandene_ects
 
     def berechne_studienfortschritt(self):
-        #Schutz vor Division durch 0, falls noch keine Module vorhanden sind.
+        # Schutz vor Division durch 0, falls noch keine Module vorhanden sind.
         gesamte_ects = self.berechne_gesamte_ects()
         if gesamte_ects == 0:
             return 0
         return self.berechne_bestandene_ects() / gesamte_ects * 100
 
-#Funktionen zum Speichern und Laden
+# Funktionen zum Speichern und Laden
 def speichere_studiengang(studiengang, dateiname):
     datei = open(dateiname, "w", encoding="utf-8")
     #Vor dem Speichern werden die Objekte in Dictionaries umgewandelt.
@@ -296,7 +303,7 @@ def speichere_studiengang(studiengang, dateiname):
     datei.close()
 
 def lade_studiengang(dateiname):
-    #Aus den geladenen Dictionaries werden wieder Objekte erzeugt.
+    # Aus den geladenen Dicts werden wieder Objekte erzeugt.
     datei = open(dateiname, "r", encoding="utf-8")
     daten = json.load(datei)
     datei.close()
@@ -318,12 +325,12 @@ def erstelle_beispieldaten():
     semester1.modul_hinzufuegen(modul2)
     semester1.modul_hinzufuegen(modul3)
 
-    studiengang = Studiengang("Artificial Intelligence", 2.0)
+    studiengang = Studiengang("Artificial Intelligence", 2.0, 180)
     studiengang.semester_hinzufuegen(semester1)
 
     return studiengang
 
-#Konsolenmenü
+# Konsolenmenue
 def zeige_menue():
     print()
     print("===== Studien-Dashboard =====")
@@ -402,7 +409,7 @@ def modul_loeschen_menue(studiengang):
     else:
         print("Dieses Modul wurde nicht gefunden.")
 
-#Programmstart
+# Programmstart
 def main():
     dateiname = "studiengang.json"
 
