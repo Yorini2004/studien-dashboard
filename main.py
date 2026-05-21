@@ -7,7 +7,7 @@ Aufbau:
     Studiengang
         enthält mehrere Semester
             enthält mehrere Module
-                enthält mehrere Prüfungsleistungen"""
+                enthält eine Prüfungsleistung"""
 
 import json
 import os
@@ -53,7 +53,7 @@ class Pruefungsleistung:
 
 #Fachklasse
 class Modul:
-    def __init__(self, name, ects, pruefungsleistung):
+    def __init__(self, name, ects, pruefungsleistung=None):
         self.name = name
         self.ects = ects
         self.pruefungsleistung = pruefungsleistung
@@ -83,21 +83,36 @@ class Modul:
         self._pruefungsleistung = pruefungsleistung
 
     def ist_abgeschlossen(self):
+        if self.pruefungsleistung is None:
+            return False
+
         return self.pruefungsleistung.ist_bestanden()
 
     def als_dict(self):
+        if self.pruefungsleistung is None:
+            pruefungsleistung_daten = None
+        else:
+            pruefungsleistung_daten = self.pruefungsleistung.als_dict()
+
         return {
             "name": self.name,
             "ects": self.ects,
-            "pruefungsleistung": self.pruefungsleistung.als_dict()
+            "pruefungsleistung": pruefungsleistung_daten
         }
 
     @classmethod
     def aus_dict(cls, daten):
-        pruefungsleistung = Pruefungsleistung.aus_dict(daten["pruefungsleistung"])
+        if daten["pruefungsleistung"] is None:
+            pruefungsleistung = None
+        else:
+            pruefungsleistung = Pruefungsleistung.aus_dict(daten["pruefungsleistung"])
+
         return cls(daten["name"], daten["ects"], pruefungsleistung)
 
     def __str__(self):
+        if self.pruefungsleistung is None:
+            return f"Modul: {self.name} | {self.ects} ECTS | noch keine Prüfungsleistung"
+
         return f"Modul: {self.name} | {self.ects} ECTS | {self.pruefungsleistung}"
 
 #Fachklasse
@@ -124,6 +139,22 @@ class Semester:
 
     def modul_hinzufuegen(self, modul):
         self.module.append(modul)
+
+    def modul_suchen(self, name):
+        for modul in self.module:
+            if modul.name == name:
+                return modul
+
+        return None
+
+    def modul_loeschen(self, name):
+        modul = self.modul_suchen(name)
+
+        if modul is None:
+            return False
+
+        self.module.remove(modul)
+        return True
 
     def zeige_modul(self):
         print(f"Semester: {self.nummer}")
@@ -175,6 +206,13 @@ class Studiengang:
 
     def semester_hinzufuegen(self, semester):
         self.semester.append(semester)
+
+    def semester_suchen(self, nummer):
+        for semester in self.semester:
+            if semester.nummer == nummer:
+                return semester
+
+        return None
 
     def als_dict(self):
         semester_liste = []
@@ -292,7 +330,77 @@ def zeige_menue():
     print("1 - Übersicht anzeigen")
     print("2 - Daten speichern")
     print("3 - Daten laden")
+    print("4 - Semester hinzufügen")
+    print("5 - Modul hinzufügen")
+    print("6 - Prüfungsleistung hinzufügen")
+    print("7 - Modul löschen")
     print("0 - Programm beenden")
+
+def semester_hinzufuegen_menue(studiengang):
+    nummer = int(input("Nummer des neuen Semesters: "))
+
+    if studiengang.semester_suchen(nummer) is not None:
+        print("Dieses Semester existiert bereits.")
+    else:
+        neues_semester = Semester(nummer)
+        studiengang.semester_hinzufuegen(neues_semester)
+        print(f"Semester {nummer} wurde hinzugefügt.")
+
+def modul_hinzufuegen_menue(studiengang):
+    semester_nummer = int(input("Zu welchem Semester soll das Modul hinzugefügt werden? "))
+    semester = studiengang.semester_suchen(semester_nummer)
+
+    if semester is None:
+        print("Dieses Semester existiert nicht.")
+        return
+
+    name = input("Name des Moduls: ")
+    ects = float(input("ECTS des Moduls: "))
+
+    neues_modul = Modul(name, ects)
+    semester.modul_hinzufuegen(neues_modul)
+
+    print(f"Modul {name} wurde zu Semester {semester_nummer} hinzugefügt.")
+
+def pruefungsleistung_hinzufuegen_menue(studiengang):
+    semester_nummer = int(input("In welchem Semester liegt das Modul? "))
+    semester = studiengang.semester_suchen(semester_nummer)
+
+    if semester is None:
+        print("Dieses Semester existiert nicht.")
+        return
+
+    modul_name = input("Name des Moduls: ")
+    modul = semester.modul_suchen(modul_name)
+
+    if modul is None:
+        print("Dieses Modul existiert in diesem Semester nicht.")
+        return
+
+    art = input("Art der Prüfungsleistung: ")
+    note = float(input("Note: "))
+
+    pruefungsleistung = Pruefungsleistung(art, note)
+    modul.pruefungsleistung = pruefungsleistung
+
+    print(f"Prüfungsleistung für {modul.name} wurde hinzugefügt.")
+
+def modul_loeschen_menue(studiengang):
+    semester_nummer = int(input("Aus welchem Semester soll das Modul gelöscht werden? "))
+    semester = studiengang.semester_suchen(semester_nummer)
+
+    if semester is None:
+        print("Dieses Semester existiert nicht.")
+        return
+
+    modul_name = input("Name des Moduls: ")
+
+    wurde_geloescht = semester.modul_loeschen(modul_name)
+
+    if wurde_geloescht:
+        print(f"Modul {modul_name} wurde gelöscht.")
+    else:
+        print("Dieses Modul wurde nicht gefunden.")
 
 #Programmstart
 def main():
@@ -317,6 +425,18 @@ def main():
         elif auswahl == "3":
             studiengang = lade_studiengang(dateiname)
             print("Daten wurden geladen.")
+
+        elif auswahl == "4":
+            semester_hinzufuegen_menue(studiengang)
+
+        elif auswahl == "5":
+            modul_hinzufuegen_menue(studiengang)
+
+        elif auswahl == "6":
+            pruefungsleistung_hinzufuegen_menue(studiengang)
+
+        elif auswahl == "7":
+            modul_loeschen_menue(studiengang)
 
         elif auswahl == "0":
             print("Programm wird beendet.")
