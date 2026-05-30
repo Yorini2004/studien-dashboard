@@ -1,6 +1,7 @@
 {
     "name": "Artificial Intelligence",
     "ziel_notendurchschnitt": 2.0,
+    "gesamt_ects": 180,
     "semester": [
         {
             "nummer": 1,

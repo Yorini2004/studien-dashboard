@@ -1,38 +1,35 @@
 # Studien-Dashboard
 
-Dieses Projekt ist ein prototypisches Studien-Dashboard fuer das Modul
-"Objektorientierte und funktionale Programmierung mit Python".
+Dieses Projekt ist ein einfacher Python-Prototyp für ein Studien-Dashboard.
 
-Das Programm zeigt wichtige Kennzahlen zum Studienfortschritt an und erlaubt
-eine einfache Pflege der Studiendaten ueber ein Konsolenmenue.
+Das Programm zeigt:
+- den Studiengang
+- den Ziel-Notendurchschnitt
+- den aktuellen Notendurchschnitt
+- die bestandenen ECTS
+- den Studienfortschritt in Prozent
+- gespeicherte Semester, Module und Prüfungsleistungen
 
-## Ziel des Projekts
+## Aufbau
 
-Ziel ist es, den eigenen Studienfortschritt uebersichtlich darzustellen.
-Dabei stehen folgende Fragen im Mittelpunkt:
+Das Programm ist objektorientiert aufgebaut. Es verwendet die Klassen:
 
-- Wie hoch ist der aktuelle Notendurchschnitt?
-- Wie viele ECTS wurden bereits bestanden?
-- Wie hoch ist der Studienfortschritt in Prozent?
-- Welche Module sind bereits abgeschlossen?
-- Welche Module haben noch keine Pruefungsleistung?
+- `Studiengang`
+- `Semester`
+- `Modul`
+- `Pruefungsleistung`
 
-Der Schwerpunkt des Projekts liegt auf der objektorientierten Modellierung
-und der Umsetzung eines einfachen, aber funktionsfaehigen Prototyps in Python.
+Ein Studiengang enthält mehrere Semester. Ein Semester enthält mehrere Module. Ein Modul kann eine Prüfungsleistung besitzen.
 
-## Objektorientierter Aufbau
+## Speicherung
 
-Das Programm verwendet vier fachliche Hauptklassen:
+Die Daten werden in der Datei `studiengang.json` gespeichert. Dafür werden die Objekte vor dem Speichern in Dicts umgewandelt und beim Laden wieder als Objekte erzeugt.
 
-- Pruefungsleistung
-- Modul
-- Semester
-- Studiengang
+## Start des Programms
 
-Der Aufbau ist:
+Das Programm benötigt keine externen Bibliotheken.
 
-```text
-Studiengang
-  enthaelt mehrere Semester
-    enthaelt mehrere Module
-      enthaelt eine Pruefungsleistung
+Start über die Konsole:
+
+```bash
+python main.py
