@@ -8,7 +8,7 @@
             "module": [
                 {
                     "name": "OOP",
-                    "ects": 5.0,
+                    "ects": 5,
                     "pruefungsleistung": {
                         "art": "Portfolio",
                         "note": 1.7
@@ -16,7 +16,7 @@
                 },
                 {
                     "name": "Mathematik",
-                    "ects": 5.0,
+                    "ects": 5,
                     "pruefungsleistung": {
                         "art": "Klausur",
                         "note": 2.3
@@ -24,7 +24,7 @@
                 },
                 {
                     "name": "Ethik",
-                    "ects": 5.0,
+                    "ects": 5,
                     "pruefungsleistung": {
                         "art": "Vortrag",
                         "note": 5.0
@@ -34,7 +34,13 @@
         },
         {
             "nummer": 2,
-            "module": []
+            "module": [
+                {
+                    "name": "Statistik",
+                    "ects": 5,
+                    "pruefungsleistung": null
+                }
+            ]
         }
     ]
 }
