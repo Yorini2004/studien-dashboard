@@ -20,12 +20,12 @@ Zuständigkeit:
 
 | Datei | Klasse(n) | Aufgabe |
 | --- | --- | --- |
-| `main.py` | `DashboardApp` | Startpunkt, erzeugt und verbindet die Schichten |
-| `view.py` | `KonsolenView` | Ein- und Ausgabe über die Konsole |
-| `controller.py` | `DashboardController` | Ablaufsteuerung, Menüverarbeitung |
-| `repository.py` | `StudiengangRepository` | Speichern und Laden, Mapping Objekt ↔ JSON |
-| `modell.py` | `Studiengang`, `Semester`, `Modul`, `Pruefungsleistung` | Fachmodell |
-| `beispieldaten.py` | – | Startdaten für den ersten Programmstart |
+| **main.py** | *DashboardApp* | Startpunkt, erzeugt und verbindet die Schichten |
+| **view.py** | *KonsolenView* | Ein- und Ausgabe über die Konsole |
+| **controller.py** | *DashboardController* | Ablaufsteuerung, Menüverarbeitung |
+| **repository.py** | *StudiengangRepository* | Speichern und Laden, Mapping Objekt ↔ JSON |
+| **modell.py** | *Studiengang*, *Semester*, *Modul*, *Pruefungsleistung* | Fachmodell |
+| **beispieldaten.py** | – | Startdaten für den ersten Programmstart |
 
 Ein Studiengang enthält mehrere Semester, ein Semester mehrere Module und ein
 Modul kann eine Prüfungsleistung besitzen. Die Fachklassen kennen weder die
